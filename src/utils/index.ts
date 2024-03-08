@@ -1,4 +1,4 @@
-// constants of random indonesian food
+export * from "./distance"
 
 export const MAKANAN_INDONESIA = [
     "Nasi Goreng",
