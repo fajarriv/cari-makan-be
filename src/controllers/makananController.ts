@@ -29,8 +29,7 @@ const makananRandom: RequestHandler<
 
 const cariMakanan: RequestHandler<
   null,
-  //   CariMakanResponse,
-  any,
+  CariMakanResponse,
   null,
   TCariMakanReqQuery
 > = async (req, res) => {
@@ -38,7 +37,8 @@ const cariMakanan: RequestHandler<
   const fieldMask =
     "places.id,places.displayName,places.rating,places.userRatingCount,places.formattedAddress,places.location";
 
-  const rankPreference = req.query.rankByNearest === true ? "DISTANCE" : "RELEVANCE";
+  const rankPreference =
+    req.query.rankByNearest === true ? "DISTANCE" : "RELEVANCE";
   const placesApiReqBody = {
     textQuery: req.query.namaMakanan,
     includedType: "restaurant",
@@ -62,15 +62,20 @@ const cariMakanan: RequestHandler<
   };
 
   const placesApiUrl = "https://places.googleapis.com/v1/places:searchText";
-  const response = await fetch(placesApiUrl, {
+  const googleResponse = await fetch(placesApiUrl, {
     method: "POST",
     headers: placesApiHeaders,
     body: JSON.stringify(placesApiReqBody),
   });
 
-  const data: PlaceSearchResponse = await response.json();
+  const data: PlaceSearchResponse = await googleResponse.json();
+  const response: CariMakanResponse = {
+    success: true,
+    result: formatResponse(data, req.query.latitude, req.query.longitude),
+    error: null,
+  };
 
-  res.send(formatResponse(data, req.query.latitude, req.query.longitude));
+  res.send(response).status(200);
 };
 
 const formatResponse = (
@@ -91,7 +96,7 @@ const formatResponse = (
       alamat: place.formattedAddress,
       jarak: jarak,
       rating: place.rating
-        ? `${place.rating}(${place.userRatingCount})`
+        ? `${place.rating} (${place.userRatingCount})`
         : "N/A",
     };
   });
