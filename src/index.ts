@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import { makananRouter } from "./routes";
 
 dotenv.config();
 
@@ -20,3 +21,5 @@ const options: cors.CorsOptions = {
 
 app.use(cors(options));
 app.use(express.json());
+
+app.use("/api/makanan", makananRouter);
