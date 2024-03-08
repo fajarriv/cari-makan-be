@@ -23,3 +23,4 @@ app.use(cors(options));
 app.use(express.json());
 
 app.use("/api/makanan", makananRouter);
+export default app;
